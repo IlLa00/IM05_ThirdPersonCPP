@@ -1,10 +1,12 @@
 #include "CPlayer.h"
-#include "Utilities/CHelpers.h"
+#include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/COptionComponent.h"
+#include "Components/CStateComponent.h"
+#include "Components/CMontagesComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -29,6 +31,10 @@ ACPlayer::ACPlayer()
 	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
 
 	CHelpers::CreateActorComponent(this, &OptionComp, "OptionComp");
+
+	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
+
+	CHelpers::CreateActorComponent(this, &MontagesComp, "MontagesComp");
 
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
@@ -90,7 +96,7 @@ void ACPlayer::OnLookUp(float Axis)
 
 void ACPlayer::OnZoom(float Axis)
 {
-	float Rate = OptionComp->GetZoomSpeed() * GetWorld()->GetDeltaSeconds();
+	float Rate = OptionComp->GetZoomSpeed() * Axis * GetWorld()->GetDeltaSeconds();
 
 	SpringArmComp->TargetArmLength += Rate;
 	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, OptionComp->GetZoomMin(), OptionComp->GetZoomMax());
