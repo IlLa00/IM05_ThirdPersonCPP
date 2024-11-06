@@ -46,4 +46,11 @@ public:
 	{
 		*OutComp = InObject->CreateDefaultSubobject<T>(InName);
 	}
+
+	template<typename T>
+	static T* GetComponent(AActor* InActor)
+	{
+		return Cast<T>(InActor->GetComponentByClass(T::StaticClass()));
+	}
+	
 };

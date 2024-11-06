@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/CStateComponent.h"
 #include "CPlayer.generated.h"
 
 class USpringArmComponent;
@@ -10,6 +11,7 @@ class UCAttributeComponent;
 class UCOptionComponent;
 class UCStateComponent;
 class UCMontagesComponent;
+class UCActionComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayer : public ACharacter
@@ -32,6 +34,31 @@ private:
 	void OnLookUp(float Axis);
 	void OnZoom(float Axis);
 
+	void OnEvade();
+	void OnWalk();
+	void OffWalk();
+
+	void OnFist();
+	void OnOneHand();
+	void OnTwoHand();
+	void OnMagicBall();
+	void OnWarp();
+	void OnWhirlWind();
+
+private:
+	void Begin_Roll();
+	void Begin_Backstep();
+
+	void RollingRotation();
+
+public:
+	void End_Roll();
+	void End_Backstep();
+
+private:
+	UFUNCTION()
+		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		USpringArmComponent* SpringArmComp;
@@ -50,4 +77,7 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UCMontagesComponent* MontagesComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UCActionComponent* ActionComp;
 };
