@@ -65,7 +65,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "DataAsset")
-		UCActionData* DataAssets[(int32)EActionType::Max];
+		UCActionData DataAssets[(int32)EActionType::Max];
 
 private:
 	EActionType Type;
