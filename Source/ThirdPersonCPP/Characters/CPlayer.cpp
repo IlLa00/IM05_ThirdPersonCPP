@@ -3,10 +3,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/COptionComponent.h"
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
+#include "Actions/CActionData.h"
 
 ACPlayer::ACPlayer()
 {
@@ -49,11 +51,24 @@ ACPlayer::ACPlayer()
 void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BodyMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), nullptr);
+	LogoMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(1), nullptr);
+
+	GetMesh()->SetMaterial(0, BodyMaterial);
+	GetMesh()->SetMaterial(1, LogoMaterial);
 	
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
 
 	ActionComp->SetUnarmedMode();
 }
+
+void ACPlayer::SetBodyColor(FLinearColor InColor)
+{
+	BodyMaterial->SetVectorParameterValue("BodyMaterial", InColor);
+	LogoMaterial->SetVectorParameterValue("LogoMaterial", InColor);
+}
+
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -228,13 +243,27 @@ void ACPlayer::RollingRotation()
 
 void ACPlayer::End_Roll()
 {
+	UCActionData* CurrentDA = ActionComp->GetCurrentDataAsset();
+
+	if (CurrentDA && CurrentDA->EquipmentData.bUseControlRotation)
+	{
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
+
 	StateComp->SetIdleMode();
 }
 
 void ACPlayer::End_Backstep()
 {
-	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	UCActionData* CurrentDA = ActionComp->GetCurrentDataAsset();
+
+	if (CurrentDA && !CurrentDA->EquipmentData.bUseControlRotation)
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+	
 
 	StateComp->SetIdleMode();
 }

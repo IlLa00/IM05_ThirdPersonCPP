@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FORCEINLINE bool IsWhirlWindMode() const { return Type == EActionType::WhirlWind; }
 
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE UCActionData* GetCurrentDataAsset() { return DataAssets[(int32)Type]; }
+
 	void SetUnarmedMode();
 	void SetFistMode();
 	void SetOneHandMode();
@@ -65,7 +68,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "DataAsset")
-		UCActionData DataAssets[(int32)EActionType::Max];
+		UCActionData* DataAssets[(int32)EActionType::Max];
 
 private:
 	EActionType Type;

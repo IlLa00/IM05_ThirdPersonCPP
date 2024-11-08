@@ -38,7 +38,7 @@ class THIRDPERSONCPP_API UCActionData : public UDataAsset
 public:
 	void BeginPlay(ACharacter* InOwnerCharacter);
 
-	FORCEINLINE ACEquipment GetEquipment() { return Equipment; }
+	FORCEINLINE ACEquipment* GetEquipment() { return Equipment; }
 
 private:
 	FString MakeLabel(ACharacter* InOwnerCharacter, FString InMiddleName);
