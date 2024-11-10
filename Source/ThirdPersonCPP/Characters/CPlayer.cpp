@@ -9,6 +9,7 @@
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
 #include "Actions/CActionData.h"
+#include "DrawDebugHelpers.h"
 
 ACPlayer::ACPlayer()
 {
@@ -90,6 +91,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("MagicBall", IE_Pressed, this, &ACPlayer::OnMagicBall);
 	PlayerInputComponent->BindAction("Warp", IE_Pressed, this, &ACPlayer::OnWarp);
 	PlayerInputComponent->BindAction("WhirlWind", IE_Pressed, this, &ACPlayer::OnWhirlWind);
+
+	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &ACPlayer::OnInteraction);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -201,6 +204,33 @@ void ACPlayer::OnWhirlWind()
 	ActionComp->SetWhirlWindMode();
 }
 
+void ACPlayer::OnInteraction()
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(ObjectTypeQuery4); // BlockAllDynamic
+
+	TArray<AActor*> Ignores;
+
+	FHitResult Hit;
+
+	if (UKismetSystemLibrary::SphereTraceSingleForObjects
+	(
+		GetWorld(),
+		GetActorLocation(),
+		GetActorLocation() + FVector(1),
+		100.f,
+		ObjectTypes,
+		false,
+		Ignores,
+		EDrawDebugTrace::ForDuration,
+		Hit,
+		true
+	))
+	{
+		PrintLine(); // ¿©±â ¾ÈÂïÈû
+	}
+}
+
 void ACPlayer::Begin_Roll()
 {
 	bUseControllerRotationYaw = false;
@@ -285,4 +315,3 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 		break;
 	}
 }
-

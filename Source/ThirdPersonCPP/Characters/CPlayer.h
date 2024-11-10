@@ -49,6 +49,8 @@ private:
 	void OnWarp();
 	void OnWhirlWind();
 
+	void OnInteraction();
+
 private:
 	void Begin_Roll();
 	void Begin_Backstep();

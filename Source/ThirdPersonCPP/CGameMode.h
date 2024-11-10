@@ -12,5 +12,8 @@ class THIRDPERSONCPP_API ACGameMode : public AGameModeBase
 
 public:
 	ACGameMode();
+
+public:
+	void BeginPlay() override;
 	
 };
