@@ -8,8 +8,11 @@
 #include "Components/COptionComponent.h"
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
+#include "Assignment/CKeyEquipComponent.h"
 #include "Actions/CActionData.h"
 #include "DrawDebugHelpers.h"
+#include "Assignment/CBox.h"
+#include "Assignment/CDoor.h"
 
 ACPlayer::ACPlayer()
 {
@@ -41,6 +44,7 @@ ACPlayer::ACPlayer()
 
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
 	
+	CHelpers::CreateActorComponent(this, &KeyEquipComp, "KeyEquipComp");
 
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
@@ -207,7 +211,7 @@ void ACPlayer::OnWhirlWind()
 void ACPlayer::OnInteraction()
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(ObjectTypeQuery4); // BlockAllDynamic
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 
 	TArray<AActor*> Ignores;
 
@@ -227,7 +231,18 @@ void ACPlayer::OnInteraction()
 		true
 	))
 	{
-		PrintLine(); // 여기 안찍힘
+		// 여기서 박스랑 상호작용할때랑 문이랑 상호작용할때로 나누어야함
+		if (Hit.Actor->IsA<ACBox>())
+		{
+			Box = Cast<ACBox>(Hit.Actor);
+
+			Box->OpenChest(Hit);
+			// Open
+		}
+		else if (Hit.Actor->IsA<ACDoor>())
+		{
+			PrintLine(); //Todo. 여까지 잘됨 
+		}
 	}
 }
 

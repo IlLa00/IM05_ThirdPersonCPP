@@ -5,6 +5,9 @@
 #include "CBox.generated.h"
 
 class UBoxComponent;
+class UCInfoWidget;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOpenChest, FHitResult);
 
 UCLASS()
 class THIRDPERSONCPP_API ACBox : public AActor
@@ -21,6 +24,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	FORCEINLINE FVector GetColor() { return Color; }
+
+public:
+	UFUNCTION(BlueprintNativeEvent)
+		void Open(FHitResult Hit);
+
+	UFUNCTION()
+		void OpenChest(FHitResult Hit);
+
+public:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Component")
 		UStaticMeshComponent* ChestTopComp;
 
@@ -33,6 +46,13 @@ public:
 	UPROPERTY(EditInstanceOnly, Category = "Color")
 		FVector Color;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+		TSubclassOf<UCInfoWidget> WidgetClass;
 
+public:
+	FOpenChest OnOpenChest;
 
+private:
+	UCInfoWidget* Widget;
+	bool bOpen;
 };

@@ -13,7 +13,9 @@ class UCOptionComponent;
 class UCStateComponent;
 class UCMontagesComponent;
 class UCActionComponent;
+class UCKeyEquipComponent;
 class UMaterialInstanceDynamic;
+class ACBox;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface
@@ -87,7 +89,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UCActionComponent* ActionComp;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UCKeyEquipComponent* KeyEquipComp;
+
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
+
+	ACBox* Box;
 };
