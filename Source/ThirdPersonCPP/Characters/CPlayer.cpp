@@ -65,8 +65,8 @@ void ACPlayer::BeginPlay()
 
 void ACPlayer::SetBodyColor(FLinearColor InColor)
 {
-	BodyMaterial->SetVectorParameterValue("BodyMaterial", InColor);
-	LogoMaterial->SetVectorParameterValue("LogoMaterial", InColor);
+	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
+	LogoMaterial->SetVectorParameterValue("LogoColor", InColor);
 }
 
 
