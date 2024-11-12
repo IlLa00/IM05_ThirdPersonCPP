@@ -231,7 +231,7 @@ void ACPlayer::OnInteraction()
 		true
 	))
 	{
-		// 여기서 박스랑 상호작용할때랑 문이랑 상호작용할때로 나누어야함
+		// 여기서 박스랑 상호작용할때랑 문이랑 상호작용할때로 나누어야함 -> 문이랑 해야됨?
 		if (Hit.Actor->IsA<ACBox>())
 		{
 			Box = Cast<ACBox>(Hit.Actor);
@@ -241,7 +241,7 @@ void ACPlayer::OnInteraction()
 		}
 		else if (Hit.Actor->IsA<ACDoor>())
 		{
-			PrintLine(); //Todo. 여까지 잘됨 
+			PrintLine(); 
 		}
 	}
 }

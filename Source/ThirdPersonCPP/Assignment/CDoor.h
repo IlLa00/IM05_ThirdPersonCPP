@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "CDoor.generated.h"
 
+class UCDoorWidget;
+
 UCLASS()
 class THIRDPERSONCPP_API ACDoor : public AActor
 {
@@ -18,6 +20,9 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	bool CheckColor(FHitResult Hit);
+
 public:
 	UFUNCTION(BlueprintNativeEvent)
 		void OpenDoor();
@@ -31,6 +36,9 @@ public:
 	UPROPERTY(EditInstanceOnly, Category = "Color")
 		FLinearColor Color;
 
-private:
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+		TSubclassOf<UCDoorWidget> WidgetClass;
 
+private:
+	UCDoorWidget* Widget;
 };

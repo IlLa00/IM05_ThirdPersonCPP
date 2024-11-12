@@ -24,7 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	FORCEINLINE FVector GetColor() { return Color; }
+	FORCEINLINE FLinearColor GetColor() { return Color; }
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
@@ -44,7 +44,7 @@ public:
 		UBoxComponent* BoxComp;
 
 	UPROPERTY(EditInstanceOnly, Category = "Color")
-		FVector Color;
+		FLinearColor Color;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 		TSubclassOf<UCInfoWidget> WidgetClass;

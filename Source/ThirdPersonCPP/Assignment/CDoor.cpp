@@ -1,6 +1,9 @@
 #include "CDoor.h"
 #include "Global.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "CDoorWidget.h"
+#include "Characters/CPlayer.h"
+#include "CKeyEquipComponent.h"
 
 ACDoor::ACDoor()
 {
@@ -24,6 +27,9 @@ ACDoor::ACDoor()
 
 	DoorMeshComp->SetStaticMesh(DoorMeshAsset);
 	DoorMeshComp->SetRelativeLocation(FVector(0, 45, 0));
+
+	CHelpers::GetClass(&WidgetClass, "/Game/Assignment/WB_CDoorWidget");
+	CheckNull(WidgetClass);
 }
 
 void ACDoor::BeginPlay()
@@ -41,16 +47,88 @@ void ACDoor::BeginPlay()
 
 	DoorMaterialInstance->SetVectorParameterValue("BaseColor", Color);
 	DoorMeshComp->SetMaterial(0, DoorMaterialInstance);
+
+	Widget = CreateWidget<UCDoorWidget>(GetWorld(), WidgetClass);
+	CheckNull(Widget);
+
+	Widget->AddToViewport();
+	Widget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void ACDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+	TArray<AActor*> Ignores;
+
+	FHitResult Hit;
+	
+	if (UKismetSystemLibrary::SphereTraceSingleForObjects
+	(
+		GetWorld(),
+		GetActorLocation(),
+		GetActorLocation() + FVector(1),
+		150.f,
+		ObjectTypes,
+		false,
+		Ignores,
+		EDrawDebugTrace::ForOneFrame,
+		Hit,
+		true
+	))
+	{
+		bool Result = CheckColor(Hit);
+
+		if (Result)
+		{
+			PrintLine();
+			OpenDoor();
+		}
+		else
+		{
+			FVector2D ScreenPosition;
+			GetWorld()->GetFirstPlayerController()->ProjectWorldLocationToScreen(GetActorLocation(), ScreenPosition);
+			Widget->SetPositionInViewport(ScreenPosition);
+
+			Widget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		Widget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+}
+
+bool ACDoor::CheckColor(FHitResult Hit)
+{
+	UCKeyEquipComponent* KeyEquip = Cast<UCKeyEquipComponent>((Cast<ACPlayer>(Hit.Actor))->GetComponentByClass(UCKeyEquipComponent::StaticClass()));
+
+	if (Color == FLinearColor(50, 0, 0,0))
+	{
+		bool Result = KeyEquip->IsRedKey();
+		return Result;
+	}
+	else if (Color == FLinearColor(0, 50, 0,0))
+	{
+		bool Result = KeyEquip->IsGreenKey();
+		return Result;
+	}
+	else if (Color == FLinearColor(0, 0, 50,0))
+	{
+		bool Result = KeyEquip->IsBlueKey();
+		return Result;
+	}
+
+	return false;
 }
 
 void ACDoor::OpenDoor_Implementation()
 {
-
+	PrintLine();
+	DoorMeshComp->SetRelativeRotation(FRotator(0, 100, 0));
 }
 

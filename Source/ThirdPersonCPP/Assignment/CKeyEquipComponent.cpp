@@ -13,10 +13,16 @@ void UCKeyEquipComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Box = Cast<ACBox>(UGameplayStatics::GetActorOfClass(GetWorld(), Box->StaticClass()));
-	CheckNull(Box);
+	TArray<AActor*> Boxes;
 
-	Box->OnOpenChest.AddUObject(this, &UCKeyEquipComponent::GetColor);	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACBox::StaticClass(), Boxes);
+
+	if (Boxes.Num() > 0)
+	{
+		for (const auto& b : Boxes)
+			Cast<ACBox>(b)->OnOpenChest.AddUObject(this, &UCKeyEquipComponent::GetColor);
+	}
+		
 
 }
 
@@ -30,18 +36,16 @@ void UCKeyEquipComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void UCKeyEquipComponent::GetColor(FHitResult Hit)
 {
 	ACBox* HitBox = Cast<ACBox>(Hit.Actor);
-	FVector Color = HitBox->GetColor();
-
-	if (Color == FVector(50, 0, 0))
+	FLinearColor Color = HitBox->GetColor();
+	PrintLine();
+	if (Color == FLinearColor(50, 0, 0, 0))
 		SetRedKey(true);
-	else if (Color == FVector(0, 50, 0))
+	else if (Color == FLinearColor(0, 50, 0, 0))
 		SetGreenKey(true);
-	else if (Color == FVector(0, 0, 50))
+	else if (Color == FLinearColor(0, 0, 50, 0))
 		SetBlueKey(true);
 	else
-		PrintLine(); // 여기찍히는건 초록상자의 정보를 못가져오기 때문.
-
-	
+		PrintLine(); 
 }
 
 void UCKeyEquipComponent::SetRedKey(bool InState)

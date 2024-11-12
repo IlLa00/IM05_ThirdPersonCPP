@@ -35,7 +35,4 @@ private:
 	bool bRedKey;
 	bool bGreenKey;
 	bool bBlueKey;
-
-	ACBox* Box;
-		
 };
