@@ -90,6 +90,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("MagicBall", IE_Pressed, this, &ACPlayer::OnMagicBall);
 	PlayerInputComponent->BindAction("Warp", IE_Pressed, this, &ACPlayer::OnWarp);
 	PlayerInputComponent->BindAction("WhirlWind", IE_Pressed, this, &ACPlayer::OnWhirlWind);
+
+	PlayerInputComponent->BindAction("Primary Action", IE_Pressed, this, &ACPlayer::OnPrimaryAction);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -199,6 +201,16 @@ void ACPlayer::OnWhirlWind()
 	CheckFalse(StateComp->IsIdleMode());
 
 	ActionComp->SetWhirlWindMode();
+}
+
+void ACPlayer::OnPrimaryAction()
+{
+	ActionComp->PrimaryAction();
+}
+
+void ACPlayer::OnSecondaryAction()
+{
+
 }
 
 void ACPlayer::Begin_Roll()
