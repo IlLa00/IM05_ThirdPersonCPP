@@ -5,6 +5,7 @@
 #include "CKeyEquipComponent.generated.h"
 
 class ACBox;
+class UCKeyIconWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THIRDPERSONCPP_API UCKeyEquipComponent : public UActorComponent
@@ -31,8 +32,14 @@ public:
 	void SetGreenKey(bool InState);
 	void SetBlueKey(bool InState);
 
+public:
+	UPROPERTY(EditInstanceOnly)
+		TSubclassOf<UCKeyIconWidget> WidgetClass;
+
 private:
 	bool bRedKey;
 	bool bGreenKey;
 	bool bBlueKey;
+
+	UCKeyIconWidget* Widget;
 };

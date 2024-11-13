@@ -1,11 +1,14 @@
 #include "CKeyEquipComponent.h"
 #include "Global.h"
 #include "CBox.h"
+#include "CKeyIconWidget.h"
 
 UCKeyEquipComponent::UCKeyEquipComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	CHelpers::GetClass(&WidgetClass, "/Game/Assignment/WB_KeyWidget");
+	CheckNull(WidgetClass);
 }
 
 
@@ -23,7 +26,10 @@ void UCKeyEquipComponent::BeginPlay()
 			Cast<ACBox>(b)->OnOpenChest.AddUObject(this, &UCKeyEquipComponent::GetColor);
 	}
 		
+	Widget = CreateWidget<UCKeyIconWidget>(GetWorld(), WidgetClass);
+	CheckNull(Widget);
 
+	Widget->AddToViewport();
 }
 
 
@@ -51,18 +57,21 @@ void UCKeyEquipComponent::GetColor(FHitResult Hit)
 void UCKeyEquipComponent::SetRedKey(bool InState)
 {
 	bRedKey = InState;
+	Widget->SetRedKey();
 	PrintLine();
 }
 
 void UCKeyEquipComponent::SetGreenKey(bool InState)
 {
 	bGreenKey = InState;
+	Widget->SetGreenKey();
 	PrintLine();
 }
 
 void UCKeyEquipComponent::SetBlueKey(bool InState)
 {
 	bBlueKey = InState;
+	Widget->SetBlueKey();
 	PrintLine();
 }
 
