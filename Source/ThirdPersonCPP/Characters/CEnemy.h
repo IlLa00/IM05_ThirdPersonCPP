@@ -10,6 +10,7 @@ class UCStateComponent;
 class UCMontagesComponent;
 class UCActionComponent;
 class UMaterialInstanceDynamic;
+class UWidgetComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACEnemy : public ACharacter, public ICCharacterInterface
@@ -37,6 +38,12 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UCActionComponent* ActionComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UWidgetComponent* NameWidgetComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UWidgetComponent* HealthWidgetComp;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
