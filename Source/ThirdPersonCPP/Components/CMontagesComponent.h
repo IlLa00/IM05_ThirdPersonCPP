@@ -44,6 +44,8 @@ public:
 	void PlayRoll();
 	void PlayBackstep();
 
+	void PlayHitted();
+
 private:
 	void PlayAnimMontage(EStateType InType);
 

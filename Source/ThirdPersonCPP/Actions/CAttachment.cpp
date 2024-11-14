@@ -22,7 +22,7 @@ void ACAttachment::BeginPlay()
 		Comp->OnComponentEndOverlap.AddDynamic(this, &ACAttachment::OnComponentEndOverlap);
 	}
 
-	// OffCollision();
+	OffCollision();
 
 	Super::BeginPlay();
 }
