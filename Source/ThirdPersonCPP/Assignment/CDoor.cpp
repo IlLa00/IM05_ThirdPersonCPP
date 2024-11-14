@@ -75,7 +75,7 @@ void ACDoor::Tick(float DeltaTime)
 		ObjectTypes,
 		false,
 		Ignores,
-		EDrawDebugTrace::ForOneFrame,
+		EDrawDebugTrace::None,
 		Hit,
 		true
 	))
@@ -84,7 +84,6 @@ void ACDoor::Tick(float DeltaTime)
 
 		if (Result)
 		{
-			PrintLine();
 			OpenDoor();
 		}
 		else
@@ -128,7 +127,6 @@ bool ACDoor::CheckColor(FHitResult Hit)
 
 void ACDoor::OpenDoor_Implementation()
 {
-	PrintLine();
 	DoorMeshComp->SetRelativeRotation(FRotator(0, 100, 0));
 }
 

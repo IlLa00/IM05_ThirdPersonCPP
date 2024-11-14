@@ -83,7 +83,7 @@ void ACBox::Tick(float DeltaTime)
 			ObjectTypes,
 			false,
 			Ignores,
-			EDrawDebugTrace::ForOneFrame,
+			EDrawDebugTrace::None,
 			Hit,
 			true
 		))
@@ -113,9 +113,5 @@ void ACBox::Open_Implementation(FHitResult Hit)
 	bOpen = true;
 	Widget->SetVisibility(ESlateVisibility::Hidden);
 	ChestTopComp->SetRelativeRotation(FRotator(90, 0, 0));
-
-	// + 블프에선 사운드 추가정도?
-
-	//Todo. 열쇠 UI, 상자색 컨스트럭션 사용해야하나? , 상자 오픈시 파티클, 사운드 추가
 }
 

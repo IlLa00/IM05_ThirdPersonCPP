@@ -43,7 +43,7 @@ void UCKeyEquipComponent::GetColor(FHitResult Hit)
 {
 	ACBox* HitBox = Cast<ACBox>(Hit.Actor);
 	FLinearColor Color = HitBox->GetColor();
-	PrintLine();
+
 	if (Color == FLinearColor(50, 0, 0, 0))
 		SetRedKey(true);
 	else if (Color == FLinearColor(0, 50, 0, 0))
@@ -58,20 +58,20 @@ void UCKeyEquipComponent::SetRedKey(bool InState)
 {
 	bRedKey = InState;
 	Widget->SetRedKey();
-	PrintLine();
+
 }
 
 void UCKeyEquipComponent::SetGreenKey(bool InState)
 {
 	bGreenKey = InState;
 	Widget->SetGreenKey();
-	PrintLine();
+
 }
 
 void UCKeyEquipComponent::SetBlueKey(bool InState)
 {
 	bBlueKey = InState;
 	Widget->SetBlueKey();
-	PrintLine();
+
 }
 

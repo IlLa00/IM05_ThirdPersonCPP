@@ -226,7 +226,7 @@ void ACPlayer::OnInteraction()
 		ObjectTypes,
 		false,
 		Ignores,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		Hit,
 		true
 	))
