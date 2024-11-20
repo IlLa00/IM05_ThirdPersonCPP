@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CMontagesComponent.h"
@@ -64,6 +65,9 @@ void ACEnemy::BeginPlay()
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
+
+	UMaterialInstanceDynamic* DisolveMaterialAsset;
+	CHelpers::GetAssetDynamic(&DissolveMaterial, "/Game/Materials/MI_Dissolve");
 
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACEnemy::OnStateTypeChanged);
 	ActionComp->SetUnarmedMode();
@@ -135,8 +139,6 @@ void ACEnemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 
 void ACEnemy::Hitted()
 {
-	PrintLine();
-
 	UCHealthWidget* HealthWidgetObject = Cast<UCHealthWidget>(HealthWidgetComp->GetUserWidgetObject());
 	
 	if (HealthWidgetObject)
@@ -157,6 +159,21 @@ void ACEnemy::Hitted()
 
 void ACEnemy::Dead()
 {
+	NameWidgetComp->SetVisibility(false);
+	HealthWidgetComp->SetVisibility(false);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+
+	FVector Start = GetActorLocation();
+	FVector Target = DamageInstigator->GetPawn()->GetActorLocation();
+	FVector Direction = Start - Target;
+	Direction.Normalize();
+
+	GetMesh()->AddImpulseAtLocation(Direction * DamageValue * 3000.f, Start);
+
 	FString Message = GetName();
 	Message.Append(" is dead.");
 	CLog::Print(Message, -1, 2, FColor::Red);

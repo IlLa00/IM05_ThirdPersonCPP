@@ -69,4 +69,7 @@ private:
 
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
+
+	UPROPERTY(VisibleAnywhere)
+		UMaterialInstanceDynamic* DissolveMaterial;
 };
