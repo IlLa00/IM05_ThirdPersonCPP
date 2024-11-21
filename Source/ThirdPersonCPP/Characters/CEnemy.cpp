@@ -8,12 +8,15 @@
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
 #include "Actions/CActionData.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UI/CNameWidget.h"
 #include "UI/CHealthWidget.h"
 
 ACEnemy::ACEnemy()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	USkeletalMesh* MeshAsset;
 	CHelpers::GetAsset(&MeshAsset, "/Game/Character/Mesh/SK_Mannequin");
 	GetMesh()->SetSkeletalMesh(MeshAsset);
@@ -51,6 +54,8 @@ ACEnemy::ACEnemy()
 
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
+	
+	CHelpers::GetAsset(&DissolveCurve, "/Game/Curves/Curve_Dissolve");
 
 	LaunchValue = 30.f;
 
@@ -66,9 +71,6 @@ void ACEnemy::BeginPlay()
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
 
-	UMaterialInstanceDynamic* DisolveMaterialAsset;
-	CHelpers::GetAssetDynamic(&DissolveMaterial, "/Game/Materials/MI_Dissolve");
-
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACEnemy::OnStateTypeChanged);
 	ActionComp->SetUnarmedMode();
 
@@ -81,7 +83,26 @@ void ACEnemy::BeginPlay()
 	UCHealthWidget* HealthWidgetObject = Cast<UCHealthWidget>(HealthWidgetComp->GetUserWidgetObject());
 	if (HealthWidgetObject)
 		HealthWidgetObject->Update(AttributeComp->GetCurrentHealth(), AttributeComp->GetMaxHealth());
+
+	UMaterialInstanceConstant* DissolveMaterialAsset;
+	CHelpers::GetAssetDynamic(&DissolveMaterialAsset, "/Game/Materials/MI_Dissolve");
+	DissolveMaterial = UMaterialInstanceDynamic::Create(DissolveMaterialAsset, nullptr);
+
+	FOnTimelineFloat DissolveTimelineDelegate;
+	DissolveTimelineDelegate.BindUFunction(this, "OnProgressDissolve");
+	DissolveTimeline.AddInterpFloat(DissolveCurve, DissolveTimelineDelegate);
+
+	FOnTimelineEvent DissolveTimelineFinish;
+	DissolveTimelineFinish.BindUFunction(this, "OnFinishDissolve");
+	DissolveTimeline.SetTimelineFinishedFunc(DissolveTimelineFinish);
 		
+}
+
+void ACEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	DissolveTimeline.TickTimeline(DeltaTime);
 }
 
 float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -174,9 +195,20 @@ void ACEnemy::Dead()
 
 	GetMesh()->AddImpulseAtLocation(Direction * DamageValue * 3000.f, Start);
 
-	FString Message = GetName();
-	Message.Append(" is dead.");
-	CLog::Print(Message, -1, 2, FColor::Red);
+	FLinearColor EquipmentColor = FLinearColor::White;
+	if (ActionComp->GetCurrentDataAsset())
+	{
+		EquipmentColor = ActionComp->GetCurrentDataAsset()->EquipmentColor;
+	}
+	
+	DissolveMaterial->SetVectorParameterValue("BaseColor", EquipmentColor);
+
+	for (int32 i = 0; i < GetMesh()->GetNumMaterials(); i++)
+	{
+		GetMesh()->SetMaterial(i, DissolveMaterial);
+	}
+
+	DissolveTimeline.PlayFromStart();
 }
 
 void ACEnemy::RestoreBodyColor()
@@ -190,4 +222,16 @@ void ACEnemy::RestoreBodyColor()
 		BodyMaterial->SetVectorParameterValue("BodyColor", EquipmentColor);
 	}
 
+}
+
+void ACEnemy::OnProgressDissolve(float Output)
+{
+	CheckNull(DissolveMaterial);
+
+	DissolveMaterial->SetScalarParameterValue("Amount", Output);
+}
+
+void ACEnemy::OnFinishDissolve()
+{
+	Destroy();
 }
