@@ -71,7 +71,3 @@ void ACAttachment::ComponentAttachTo(USceneComponent* InComp, FName InSocketName
 {
 	InComp->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, InSocketName);
 }
-
-
-
-r

@@ -11,6 +11,7 @@ class ACAttachment;
 class ACDoAction;
 class UParticleSystem;
 class UCameraShake;
+class ACProjectile;
 
 //-----------------------------------------------------------------------------
 // struct FEquipmentData
@@ -60,6 +61,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UCameraShake> ShakeClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ACProjectile> ProjectileClass;
 };
 
 //-----------------------------------------------------------------------------

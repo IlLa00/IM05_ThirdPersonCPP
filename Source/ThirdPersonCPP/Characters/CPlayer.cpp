@@ -92,6 +92,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("WhirlWind", IE_Pressed, this, &ACPlayer::OnWhirlWind);
 
 	PlayerInputComponent->BindAction("Primary Action", IE_Pressed, this, &ACPlayer::OnPrimaryAction);
+	PlayerInputComponent->BindAction("Secondary Action", IE_Pressed, this, &ACPlayer::OnBeginSecondaryAction);
+	PlayerInputComponent->BindAction("Secondary Action", IE_Released, this, &ACPlayer::OnEndSecondaryAction);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -208,9 +210,14 @@ void ACPlayer::OnPrimaryAction()
 	ActionComp->PrimaryAction();
 }
 
-void ACPlayer::OnSecondaryAction()
+void ACPlayer::OnBeginSecondaryAction()
 {
+	ActionComp->Begin_SecondaryAction();
+}
 
+void ACPlayer::OnEndSecondaryAction()
+{
+	ActionComp->End_SecondaryAction();
 }
 
 void ACPlayer::Begin_Roll()

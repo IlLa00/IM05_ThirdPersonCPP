@@ -50,7 +50,8 @@ private:
 	void OnWhirlWind();
 
 	void OnPrimaryAction();
-	void OnSecondaryAction();
+	void OnBeginSecondaryAction();
+	void OnEndSecondaryAction();
 
 private:
 	void Begin_Roll();
