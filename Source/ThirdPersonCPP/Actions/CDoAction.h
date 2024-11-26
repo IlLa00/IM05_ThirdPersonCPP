@@ -52,4 +52,5 @@ protected:
 
 protected:
 	TArray<FActionData> Datas;
+	const bool* bEquipped;
 };
