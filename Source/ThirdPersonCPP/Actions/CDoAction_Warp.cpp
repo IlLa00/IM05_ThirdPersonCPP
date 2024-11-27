@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Components/CStateComponent.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "CAttachment.h"
 
@@ -22,6 +23,10 @@ void ACDoAction_Warp::BeginPlay()
 void ACDoAction_Warp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	PreviewMeshComp->SetVisibility(false);
+
+	CheckFalse(*bEquipped);
 
 	FVector CursorLocationToWorld;
 	if (GetCursorLocation(CursorLocationToWorld))
@@ -29,21 +34,22 @@ void ACDoAction_Warp::Tick(float DeltaTime)
 		PreviewMeshComp->SetVisibility(true);
 		PreviewMeshComp->SetWorldLocation(CursorLocationToWorld);
 	}
-	else
-	{
-		PreviewMeshComp->SetVisibility(false);
-	}
 }
 
 void ACDoAction_Warp::PrimaryAction()
 {
 	Super::PrimaryAction();
 
+	CheckFalse(Datas.Num() > 0);
 	CheckFalse(StateComp->IsIdleMode());
+
+	CheckFalse(GetCursorLocation(LocationToWarp));
 
 	StateComp->SetActionMode();
 	OwnerCharacter->PlayAnimMontage(Datas[0].Montage, Datas[0].PlayRate, Datas[0].StartSection);
 	Datas[0].bCanMove ? AttributeComp->SetMove() : AttributeComp->SetStop();
+
+	SetPreviewMeshColor(FLinearColor::Red);
 }
 
 void ACDoAction_Warp::Begin_PrimaryAction()
@@ -64,8 +70,13 @@ void ACDoAction_Warp::End_PrimaryAction()
 {
 	Super::End_PrimaryAction();
 
+	LocationToWarp.Z += OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	OwnerCharacter->SetActorLocation(LocationToWarp);
+
 	StateComp->SetIdleMode();
 	AttributeComp->SetMove();
+
+	SetPreviewMeshColor(FLinearColor(0,1,1));
 }
 
 bool ACDoAction_Warp::GetCursorLocation(FVector& OutLocation)
@@ -83,4 +94,10 @@ bool ACDoAction_Warp::GetCursorLocation(FVector& OutLocation)
 	}
 
 	return false;
+}
+
+void ACDoAction_Warp::SetPreviewMeshColor(FLinearColor InColor)
+{
+	FVector Emissive = FVector(InColor.R, InColor.G, InColor.B);
+	PreviewMeshComp->SetVectorParameterValueOnMaterials("Emissive", Emissive);
 }
