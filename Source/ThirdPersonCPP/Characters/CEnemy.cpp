@@ -72,7 +72,7 @@ void ACEnemy::BeginPlay()
 	GetMesh()->SetMaterial(1, LogoMaterial);
 
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACEnemy::OnStateTypeChanged);
-	ActionComp->SetUnarmedMode();
+	//ActionComp->SetUnarmedMode();
 
 	NameWidgetComp->InitWidget();
 	UCNameWidget* NameWidgetObject = Cast<UCNameWidget>(NameWidgetComp->GetUserWidgetObject());

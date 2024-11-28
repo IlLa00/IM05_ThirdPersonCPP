@@ -61,7 +61,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UCMontagesComponent* MontagesComp;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 		UCActionComponent* ActionComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
