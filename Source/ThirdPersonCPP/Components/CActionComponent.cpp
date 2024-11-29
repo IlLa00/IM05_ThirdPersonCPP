@@ -5,6 +5,7 @@
 #include "Actions/CActionObject.h"
 #include "Actions/CEquipment.h"
 #include "Actions/CDoAction.h"
+#include "Actions/CAttachment.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -55,6 +56,39 @@ void UCActionComponent::End_SecondaryAction()
 	if (DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetDoAction())
 	{
 		DataObjects[(int32)Type]->GetDoAction()->End_SecondaryAction();
+	}
+}
+
+void UCActionComponent::OffAllCollisions()
+{
+	for (const auto& Object : DataObjects)
+	{
+		if (Object && Object->GetAttachment())
+		{
+			Object->GetAttachment()->OffCollision();
+		}
+	}
+}
+
+void UCActionComponent::DestroyAll()
+{
+	for (int32 i = 0; i < (int32)EActionType::Max; i++)
+	{
+		if (DataObjects[i])
+		{
+			if (DataObjects[i]->GetEquipment())
+			{
+				DataObjects[i]->GetEquipment()->Destroy();
+			}
+			if (DataObjects[i]->GetAttachment())
+			{
+				DataObjects[i]->GetAttachment()->Destroy();
+			}
+			if (DataObjects[i]->GetDoAction())
+			{
+				DataObjects[i]->GetDoAction()->Destroy();
+			}
+		}
 	}
 }
 

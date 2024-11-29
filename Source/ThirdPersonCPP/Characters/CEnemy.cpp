@@ -195,6 +195,8 @@ void ACEnemy::Dead()
 
 	GetMesh()->AddImpulseAtLocation(Direction * DamageValue * 3000.f, Start);
 
+	ActionComp->OffAllCollisions();
+
 	FLinearColor EquipmentColor = FLinearColor::White;
 	if (ActionComp->GetCurrentDataAsset())
 	{
@@ -233,5 +235,6 @@ void ACEnemy::OnProgressDissolve(float Output)
 
 void ACEnemy::OnFinishDissolve()
 {
+	ActionComp->DestroyAll();
 	Destroy();
 }
