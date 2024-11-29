@@ -4,17 +4,21 @@
 #include "CEquipment.h"
 #include "CAttachment.h"
 #include "CDoAction.h"
+#include "CActionObject.h"
 
-void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
+void UCActionData::BeginPlay(ACharacter* InOwnerCharacter, UCActionObject** OutActionObject)
 {
 	FTransform TM;
-
+	ACAttachment* Attachment = nullptr;
+	
 	if (AttachmentClass)
 	{
 		Attachment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACAttachment>(AttachmentClass, TM, InOwnerCharacter);
 		Attachment->SetActorLabel(MakeLabel(InOwnerCharacter, "Attachment"));
 		Attachment->FinishSpawning(TM);
 	}
+
+	ACEquipment* Equipment = nullptr;
 
 	if (EqipmentClass)
 	{
@@ -32,6 +36,8 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 			
 	}
 	
+	ACDoAction* DoAction = nullptr;
+
 	if (DoActionClass)
 	{
 		DoAction = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACDoAction>(DoActionClass, TM, InOwnerCharacter);
@@ -49,6 +55,12 @@ void UCActionData::BeginPlay(ACharacter* InOwnerCharacter)
 		}
 			
 	}
+
+	*OutActionObject = NewObject<UCActionObject>();
+	(*OutActionObject)->Attachment = Attachment;
+	(*OutActionObject)->Equipment = Equipment;
+	(*OutActionObject)->DoAction = DoAction;
+	(*OutActionObject)->EquipmentColor = EquipmentColor;
 }
 
 FString UCActionData::MakeLabel(ACharacter* InOwnerCharacter, FString InMiddleName)

@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 #include "Actions/CActionData.h"
+#include "Actions/CActionObject.h"
 #include "Actions/CEquipment.h"
 #include "Actions/CDoAction.h"
 
@@ -21,7 +22,7 @@ void UCActionComponent::BeginPlay()
 	{
 		if (DataAssets[i] && OwnerCharacter)
 		{
-			DataAssets[i]->BeginPlay(OwnerCharacter);
+			DataAssets[i]->BeginPlay(OwnerCharacter, &DataObjects[i]);
 		}
 	}
 }
@@ -30,9 +31,9 @@ void UCActionComponent::PrimaryAction()
 {
 	CheckTrue(IsUnarmedMode());
 
-	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
+	if (DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetDoAction())
 	{
-		DataAssets[(int32)Type]->GetDoAction()->PrimaryAction();
+		DataObjects[(int32)Type]->GetDoAction()->PrimaryAction();
 	}
 	
 }
@@ -41,9 +42,9 @@ void UCActionComponent::Begin_SecondaryAction()
 {
 	CheckTrue(IsUnarmedMode());
 
-	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
+	if (DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetDoAction())
 	{
-		DataAssets[(int32)Type]->GetDoAction()->Begin_SecondaryAction();
+		DataObjects[(int32)Type]->GetDoAction()->Begin_SecondaryAction();
 	}
 }
 
@@ -51,22 +52,22 @@ void UCActionComponent::End_SecondaryAction()
 {
 	CheckTrue(IsUnarmedMode());
 
-	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetDoAction())
+	if (DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetDoAction())
 	{
-		DataAssets[(int32)Type]->GetDoAction()->End_SecondaryAction();
+		DataObjects[(int32)Type]->GetDoAction()->End_SecondaryAction();
 	}
 }
 
 void UCActionComponent::SetUnarmedMode()
 {
-	if (DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
+	if (DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetEquipment())
 	{
-		DataAssets[(int32)Type]->GetEquipment()->Unequip();
+		DataObjects[(int32)Type]->GetEquipment()->Unequip();
 	}
 
-	if (DataAssets[(int32)EActionType::Unarmed] && DataAssets[(int32)EActionType::Unarmed]->GetEquipment())
+	if (DataObjects[(int32)EActionType::Unarmed] && DataObjects[(int32)EActionType::Unarmed]->GetEquipment())
 	{
-		DataAssets[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
+		DataObjects[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
 	}
 
 	ChangeType(EActionType::Unarmed);
@@ -111,12 +112,12 @@ void UCActionComponent::SetMode(EActionType InNewType)
 	}
 	else if (!IsUnarmedMode())
 	{
-		if(DataAssets[(int32)Type] && DataAssets[(int32)Type]->GetEquipment())
-			DataAssets[(int32)Type]->GetEquipment()->Unequip(); //기존 무기 언이큅
+		if(DataObjects[(int32)Type] && DataObjects[(int32)Type]->GetEquipment())
+			DataObjects[(int32)Type]->GetEquipment()->Unequip(); //기존 무기 언이큅
 	}
 
-	if (DataAssets[(int32)InNewType] && DataAssets[(int32)InNewType]->GetEquipment())
-		DataAssets[(int32)InNewType]->GetEquipment()->Equip();
+	if (DataObjects[(int32)InNewType] && DataObjects[(int32)InNewType]->GetEquipment())
+		DataObjects[(int32)InNewType]->GetEquipment()->Equip();
 
 	ChangeType(InNewType);
 }
