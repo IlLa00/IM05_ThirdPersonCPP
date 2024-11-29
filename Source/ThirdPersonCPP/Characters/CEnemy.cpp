@@ -59,12 +59,11 @@ ACEnemy::ACEnemy()
 
 	LaunchValue = 30.f;
 
+	
 }
 
 void ACEnemy::BeginPlay()
 {
-	Super::BeginPlay();
-	
 	BodyMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), nullptr);
 	LogoMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(1), nullptr);
 
@@ -95,7 +94,8 @@ void ACEnemy::BeginPlay()
 	FOnTimelineEvent DissolveTimelineFinish;
 	DissolveTimelineFinish.BindUFunction(this, "OnFinishDissolve");
 	DissolveTimeline.SetTimelineFinishedFunc(DissolveTimelineFinish);
-		
+	
+	Super::BeginPlay();
 }
 
 void ACEnemy::Tick(float DeltaTime)

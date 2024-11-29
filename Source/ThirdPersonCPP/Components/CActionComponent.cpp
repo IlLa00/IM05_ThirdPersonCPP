@@ -117,6 +117,7 @@ void UCActionComponent::SetMode(EActionType InNewType)
 
 	if (DataAssets[(int32)InNewType] && DataAssets[(int32)InNewType]->GetEquipment())
 		DataAssets[(int32)InNewType]->GetEquipment()->Equip();
+
 	ChangeType(InNewType);
 }
 
