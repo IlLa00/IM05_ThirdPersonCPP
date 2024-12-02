@@ -46,6 +46,8 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
 
+	TeamID = 0;
+	
 }
 
 void ACPlayer::BeginPlay()
@@ -67,6 +69,11 @@ void ACPlayer::SetBodyColor(FLinearColor InColor)
 {
 	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
 	LogoMaterial->SetVectorParameterValue("LogoColor", InColor);
+}
+
+FGenericTeamId ACPlayer::GetGenericTeamId() const
+{
+	return FGenericTeamId(TeamID);
 }
 
 
