@@ -32,7 +32,7 @@ private:
 		FName BehaviorKeyName = "BehaviorKey";
 
 public:
-	void SetBlackBoardComponent(UBlackboardComponent* InBlackboardComp);
+	void SetBlackboardComponent(UBlackboardComponent* InBlackboardComp);
 
 	UFUNCTION(BlueprintPure)
 		bool IsWaitMode();

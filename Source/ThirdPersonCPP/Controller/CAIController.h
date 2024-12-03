@@ -16,6 +16,9 @@ class THIRDPERSONCPP_API ACAIController : public AAIController
 
 public:
 	ACAIController();
+	
+	float GetSightRadius();
+	FORCEINLINE float GetBehaviorRange() { return BehaivorRange; }
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
@@ -28,7 +31,7 @@ public:
 
 private:
 	UFUNCTION()
-		void OnPerceptionUpdate(const TArray<AActor*>& UpdatedActors);
+		void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 	
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
@@ -40,6 +43,15 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Team")
 		uint8 TeamID;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		bool bDrawRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float AdjustHeight;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float BehaivorRange;
 
 private:
 	ACEnemy_AI* PossessedEnemy;

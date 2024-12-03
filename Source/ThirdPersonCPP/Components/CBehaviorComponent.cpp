@@ -7,9 +7,9 @@ UCBehaviorComponent::UCBehaviorComponent()
 
 }
 
-void UCBehaviorComponent::SetBlackBoardComponent(UBlackboardComponent* InBlackboardComp)
+void UCBehaviorComponent::SetBlackboardComponent(UBlackboardComponent* InBlackboardComp)
 {
-
+	BlackboardComp = InBlackboardComp;
 }
 
 bool UCBehaviorComponent::IsWaitMode()
@@ -72,16 +72,6 @@ void UCBehaviorComponent::SetRunAwayMode()
 	ChangeType(EBehaviorType::RunAway);
 }
 
-ACPlayer* UCBehaviorComponent::GetPlayerValue()
-{
-	return Cast<ACPlayer>(BlackboardComp->GetValueAsObject(PlayerKeyName));
-}
-
-FVector UCBehaviorComponent::GetLocationValue()
-{
-	return BlackboardComp->GetValueAsVector(LocationKeyName);
-}
-
 EBehaviorType UCBehaviorComponent::GetType()
 {
 	return (EBehaviorType)BlackboardComp->GetValueAsEnum(BehaviorKeyName);
@@ -91,4 +81,14 @@ void UCBehaviorComponent::ChangeType(EBehaviorType InNewType)
 {
 	EBehaviorType Prev = GetType();
 	BlackboardComp->SetValueAsEnum(BehaviorKeyName, (uint8)InNewType);
+}
+
+ACPlayer* UCBehaviorComponent::GetPlayerValue()
+{
+	return Cast<ACPlayer>(BlackboardComp->GetValueAsObject(PlayerKeyName));
+}
+
+FVector UCBehaviorComponent::GetLocationValue()
+{
+	return BlackboardComp->GetValueAsVector(LocationKeyName);
 }

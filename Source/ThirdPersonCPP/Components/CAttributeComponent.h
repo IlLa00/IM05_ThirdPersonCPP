@@ -4,6 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "CAttributeComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class EWalkSpeedType : uint8
+{
+	Sneak,Walk,Sprint,Max
+};
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THIRDPERSONCPP_API UCAttributeComponent : public UActorComponent
@@ -20,9 +26,12 @@ public:
 	FORCEINLINE float GetMaxHealth() { return MaxHealth; }
 	FORCEINLINE float GetCurrentHealth() { return CurrentHealth; }
 
-	FORCEINLINE float GetSneakSpeed() { return SneakSpeed; }
-	FORCEINLINE float GetWalkSpeed() { return WalkSpeed; }
-	FORCEINLINE float GetSprintSpeed() { return  SprintSpeed; }
+	FORCEINLINE float GetSneakSpeed() { return WalkSpeeds[(int32)EWalkSpeedType::Sneak]; }
+	FORCEINLINE float GetWalkSpeed() { return WalkSpeeds[(int32)EWalkSpeedType::Walk]; }
+	FORCEINLINE float GetSprintSpeed() { return  WalkSpeeds[(int32)EWalkSpeedType::Sprint]; }
+
+	void SetSpeed(EWalkSpeedType InType);
+
 	FORCEINLINE bool IsCanMove() { return bCanMove; }
 
 	void SetMove();
@@ -36,13 +45,9 @@ protected:
 		float MaxHealth;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-		float SneakSpeed;
+		float WalkSpeeds[(int32)EWalkSpeedType::Max];
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-		float WalkSpeed;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-		float SprintSpeed;
+	
 
 private:
 	float CurrentHealth;

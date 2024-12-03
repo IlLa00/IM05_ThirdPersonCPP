@@ -1,10 +1,13 @@
 #include "CAttributeComponent.h"
+#include "Global.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UCAttributeComponent::UCAttributeComponent()
 {
-	SneakSpeed = 200.f;
-	WalkSpeed = 400.f;
-	SprintSpeed = 600.f;
+	WalkSpeeds[(int32)EWalkSpeedType::Sneak] = 200.f;
+	WalkSpeeds[(int32)EWalkSpeedType::Walk] = 400.f;
+	WalkSpeeds[(int32)EWalkSpeedType::Sprint] = 600.f;
 
 	MaxHealth = 100.f;
 
@@ -16,6 +19,13 @@ void UCAttributeComponent::BeginPlay()
 	CurrentHealth = MaxHealth;
 
 	Super::BeginPlay();
+}
+void UCAttributeComponent::SetSpeed(EWalkSpeedType InType)
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+	CheckNull(OwnerCharacter);
+
+	OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeeds[(int32)InType];
 }
 void UCAttributeComponent::SetMove()
 {
