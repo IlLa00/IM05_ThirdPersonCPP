@@ -3,6 +3,7 @@
 #include "Controller/CAIController.h"
 #include "Components/CBehaviorComponent.h"
 #include "Components/CStateComponent.h"
+#include "Components/CPatrolComponent.h"
 #include "Characters/CPlayer.h"
 
 UCBTService_Melee::UCBTService_Melee()
@@ -10,30 +11,23 @@ UCBTService_Melee::UCBTService_Melee()
 	NodeName = "RootService";
 }
 
-void UCBTService_Melee::OnSearchStart(FBehaviorTreeSearchData& SearchData)
-{
-	Super::OnSearchStart(SearchData);
-
-	AIC = Cast<ACAIController>(SearchData.OwnerComp.GetAIOwner());
-	CheckNull(AIC);
-
-	BehaviorComp = CHelpers::GetComponent<UCBehaviorComponent>(AIC);
-	CheckNull(BehaviorComp);
-
-	EnemyPawn = AIC->GetPawn();
-	CheckNull(EnemyPawn);
-
-	StateComp = CHelpers::GetComponent<UCStateComponent>(EnemyPawn);
-}
-
 void UCBTService_Melee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	ACAIController* AIC = Cast<ACAIController>(OwnerComp.GetAIOwner());
 	CheckNull(AIC);
+
+	UCBehaviorComponent* BehaviorComp = CHelpers::GetComponent<UCBehaviorComponent>(AIC);
 	CheckNull(BehaviorComp);
+
+	APawn* EnemyPawn = AIC->GetPawn();
 	CheckNull(EnemyPawn);
+
+	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(EnemyPawn);
 	CheckNull(StateComp);
+
+	UCPatrolComponent* PatrolComp = CHelpers::GetComponent<UCPatrolComponent>(EnemyPawn);
 
 	//Hitted
 	if (StateComp->IsHittedMode())
@@ -48,6 +42,11 @@ void UCBTService_Melee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	//No Perceived Player
 	if (!Player)
 	{
+		if (PatrolComp && PatrolComp->IsPathValid())
+		{
+			BehaviorComp->SetPatrolMode();
+			return;
+		}
 		BehaviorComp->SetWaitMode();
 		return;
 	}
