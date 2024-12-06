@@ -23,8 +23,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	FORCEINLINE float GetMaxHealth() { return MaxHealth; }
-	FORCEINLINE float GetCurrentHealth() { return CurrentHealth; }
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE float GetMaxHealth() { return MaxHealth; }
+
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE float GetCurrentHealth() { return CurrentHealth; }
 
 	FORCEINLINE float GetSneakSpeed() { return WalkSpeeds[(int32)EWalkSpeedType::Sneak]; }
 	FORCEINLINE float GetWalkSpeed() { return WalkSpeeds[(int32)EWalkSpeedType::Walk]; }

@@ -1,15 +1,14 @@
 #include "CPatrolComponent.h"
 #include "Global.h"
-#include "BTNode/CPatrolPath.h"
 #include "Components/SplineComponent.h"
+#include "BTNode/CPatrolPath.h"
 
 bool UCPatrolComponent::GetMoveto(FVector& OutLocation)
 {
-	OutLocation = FVector(-1);
+	OutLocation = FVector(-1, -1, -1);
 	CheckFalseResult(IsPathValid(), false);
 
 	OutLocation = PatrolPath->GetSplineComponent()->GetLocationAtSplinePoint(Index, ESplineCoordinateSpace::World);
-
 	return true;
 }
 
@@ -19,6 +18,7 @@ void UCPatrolComponent::UpdateNextIndex()
 
 	int32 Count = PatrolPath->GetSplineComponent()->GetNumberOfSplinePoints();
 
+	//Reverse
 	if (bReverse)
 	{
 		if (Index > 0)
@@ -35,16 +35,18 @@ void UCPatrolComponent::UpdateNextIndex()
 
 		Index = 1;
 		bReverse = false;
+
 		return;
 	}
-	
+
+	//Forward
 	if (Index < Count - 1)
 	{
 		Index++;
 		return;
 	}
 
-	if (PatrolPath->GetSplineComponent())
+	if (PatrolPath->GetSplineComponent()->IsClosedLoop())
 	{
 		Index = 0;
 		return;
