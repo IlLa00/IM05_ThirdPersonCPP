@@ -1,10 +1,12 @@
 #include "CDoAction_Warp.h"
 #include "Global.h"
+#include "GameFramework/GameModeBase.h"
 #include "Components/CStateComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "CAttachment.h"
+#include "Components/CBehaviorComponent.h"
 
 void ACDoAction_Warp::BeginPlay()
 {
@@ -28,6 +30,8 @@ void ACDoAction_Warp::Tick(float DeltaTime)
 
 	CheckFalse(*bEquipped);
 
+	CheckFalse(IsOwnerPlayer());
+
 	FVector CursorLocationToWorld;
 	if (GetCursorLocation(CursorLocationToWorld))
 	{
@@ -43,7 +47,23 @@ void ACDoAction_Warp::PrimaryAction()
 	CheckFalse(Datas.Num() > 0);
 	CheckFalse(StateComp->IsIdleMode());
 
-	CheckFalse(GetCursorLocation(LocationToWarp));
+	if (IsOwnerPlayer())
+	{
+		CheckFalse(GetCursorLocation(LocationToWarp));
+	}
+	else
+	{
+		AController* AIC = OwnerCharacter->GetController();
+		if (AIC)
+		{
+			UCBehaviorComponent* BehaviorComp = CHelpers::GetComponent<UCBehaviorComponent>(AIC);
+			if (BehaviorComp)
+			{
+				LocationToWarp = BehaviorComp->GetLocationValue();
+			}
+		}
+	}
+
 
 	StateComp->SetActionMode();
 	OwnerCharacter->PlayAnimMontage(Datas[0].Montage, Datas[0].PlayRate, Datas[0].StartSection);
@@ -100,4 +120,9 @@ void ACDoAction_Warp::SetPreviewMeshColor(FLinearColor InColor)
 {
 	FVector Emissive = FVector(InColor.R, InColor.G, InColor.B);
 	PreviewMeshComp->SetVectorParameterValueOnMaterials("Emissive", Emissive);
+}
+
+bool ACDoAction_Warp::IsOwnerPlayer()
+{
+	return OwnerCharacter->GetClass() == GetWorld()->GetAuthGameMode()->DefaultPawnClass;
 }
