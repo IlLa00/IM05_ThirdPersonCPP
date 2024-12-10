@@ -39,8 +39,8 @@ private:
 	UFUNCTION()
 		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
-	void Hitted();
-	void Dead();
+	void Hitted() override;
+	void Dead() override;
 
 	UFUNCTION()
 		void RestoreBodyColor();
@@ -69,6 +69,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UWidgetComponent* HealthWidgetComp;
+
+	UPROPERTY(EditAnywhere, Category = "Debug")
+		bool bVisibleNameWidget;
 
 	UPROPERTY(EditAnywhere, Category = "Hitted")
 		float LaunchValue;
