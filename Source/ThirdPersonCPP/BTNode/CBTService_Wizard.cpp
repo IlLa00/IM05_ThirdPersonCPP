@@ -29,7 +29,6 @@ void UCBTService_Wizard::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	if (StateComp->IsDeadMode())
 	{
 		BehaviorComp->SetWaitMode();
-		AIC->GetBrainComponent()->StopLogic("Dead");
 		return;
 	}
 

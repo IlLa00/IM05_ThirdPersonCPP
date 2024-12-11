@@ -4,7 +4,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/COptionComponent.h"
 #include "Components/CMontagesComponent.h"
@@ -45,6 +47,10 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	CHelpers::CreateSceneComponent<UPostProcessComponent>(this, &PostProcessComp, "PostProcessComp", GetRootComponent());
+	// PostProcessComp->AddOrUpdateBlendable()
+
 	bUseControllerRotationYaw = false;
 
 	TeamID = 0;
@@ -301,6 +307,7 @@ void ACPlayer::Dead()
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
+	GetMesh()->GetAnimInstance()->StopAllMontages(0);
 
 	FVector Start = GetActorLocation();
 	FVector Target = DamageInstigator->GetPawn()->GetActorLocation();
@@ -308,8 +315,6 @@ void ACPlayer::Dead()
 	Direction.Normalize();
 
 	GetMesh()->AddImpulseAtLocation(Direction * DamageValue * 3000.f, Start);
-
-	ActionComp->OffAllCollisions();
 
 	DisableInput(GetController<APlayerController>());
 

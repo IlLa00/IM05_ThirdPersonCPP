@@ -15,6 +15,7 @@ class UCStateComponent;
 class UCMontagesComponent;
 class UCActionComponent;
 class UMaterialInstanceDynamic;
+class UPostProcessComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
@@ -97,6 +98,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UCActionComponent* ActionComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UPostProcessComponent* PostProcessComp;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
