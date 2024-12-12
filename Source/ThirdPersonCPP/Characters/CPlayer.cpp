@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInstanceConstant.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/CAttributeComponent.h"
@@ -47,11 +48,11 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = AttributeComp->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
 
 	CHelpers::CreateSceneComponent<UPostProcessComponent>(this, &PostProcessComp, "PostProcessComp", GetRootComponent());
-	// PostProcessComp->AddOrUpdateBlendable()
-
-	bUseControllerRotationYaw = false;
+	
+	PostProcessComp->bEnabled = false;
 
 	TeamID = 0;
 	
@@ -67,6 +68,9 @@ void ACPlayer::BeginPlay()
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
 	
+	if(PostProcessMaterial)
+		PostProcessComp->AddOrUpdateBlendable(PostProcessMaterial, 1);
+
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
 
 	ActionComp->SetUnarmedMode();
@@ -318,11 +322,24 @@ void ACPlayer::Dead()
 
 	DisableInput(GetController<APlayerController>());
 
+	PostProcessComp->bEnabled = true;
+
 	UKismetSystemLibrary::K2_SetTimer(this, "End_Dead", 5.f, false);
 }
 
 void ACPlayer::End_Dead()
 {
+	ensure(GameOverWidgetClass);
+
+	APlayerController* PC = GetController<APlayerController>();
+	if (PC)
+	{
+		UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(PC, GameOverWidgetClass);
+		GameOverWidget->AddToViewport();
+	}
+	PC->bShowMouseCursor = true;
+
+	PC->SetInputMode(FInputModeGameAndUI());
 
 }
 

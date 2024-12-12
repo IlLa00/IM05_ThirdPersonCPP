@@ -15,6 +15,7 @@ class UCStateComponent;
 class UCMontagesComponent;
 class UCActionComponent;
 class UMaterialInstanceDynamic;
+class UMaterialInstanceConstant;
 class UPostProcessComponent;
 
 UCLASS()
@@ -105,6 +106,12 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
 		uint8 TeamID;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dead")
+		UMaterialInstanceConstant* PostProcessMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dead")
+		TSubclassOf<UUserWidget> GameOverWidgetClass;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;

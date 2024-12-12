@@ -113,6 +113,8 @@ void ACDoAction_WhirlWind::End_PrimaryAction()
 void ACDoAction_WhirlWind::Abort()
 {
 	Super::Abort();
+
+	Deactivate();
 }
 
 void ACDoAction_WhirlWind::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InCauser, ACharacter* InOtherCharacter)
