@@ -17,6 +17,7 @@ class UCActionComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInstanceConstant;
 class UPostProcessComponent;
+class UCFeetComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
@@ -101,7 +102,11 @@ protected:
 		UCActionComponent* ActionComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UCFeetComponent* FeetComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 		UPostProcessComponent* PostProcessComp;
+
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")

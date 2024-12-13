@@ -5,6 +5,7 @@
 #include "CPlayerController.generated.h"
 
 class UUserWidget;
+class UCStateComponent;
 
 UCLASS()
 class THIRDPERSONCPP_API ACPlayerController : public APlayerController
@@ -15,6 +16,7 @@ public:
 	ACPlayerController();
 
 protected:
+	virtual void OnPossess(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
 
 public:
@@ -37,5 +39,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 		UUserWidget* SelectActionWidget;
+
+	UCStateComponent* StateComp;
 
 };

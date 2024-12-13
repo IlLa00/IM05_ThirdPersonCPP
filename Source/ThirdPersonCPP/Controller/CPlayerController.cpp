@@ -1,10 +1,19 @@
 #include "CPlayerController.h"
 #include "Global.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CStateComponent.h"
 
 ACPlayerController::ACPlayerController()
 {
-	
+	CHelpers::GetClass(&SelectActionWidgetClass, "/Game/UI/WB_ActionSlotContainer");
+	CheckNull(SelectActionWidgetClass);
+}
+
+void ACPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	StateComp = CHelpers::GetComponent<UCStateComponent>(InPawn);
 }
 
 void ACPlayerController::SetupInputComponent()
@@ -42,6 +51,11 @@ void ACPlayerController::ToggleOptionMenu()
 
 void ACPlayerController::EnableSelectActionWidget()
 {
+	if (StateComp)
+	{
+		CheckTrue(StateComp->IsDeadMode() || !StateComp->IsIdleMode());
+	}
+
 	if (!SelectActionWidget)
 	{
 		SelectActionWidget = CreateWidget(this, SelectActionWidgetClass);
@@ -52,11 +66,18 @@ void ACPlayerController::EnableSelectActionWidget()
 		SelectActionWidget->AddToViewport();
 
 		bShowMouseCursor = true;
-		SetInputMode(FInputModeGameAndUI);
+		SetInputMode(FInputModeGameAndUI());
 	}
 }
 
 void ACPlayerController::DisableSelectActionWidget()
 {
+	if (SelectActionWidget && SelectActionWidget->IsInViewport())
+	{
+		SelectActionWidget->RemoveFromParent();
+		SelectActionWidget = nullptr;
 
+		bShowMouseCursor = false;
+		SetInputMode(FInputModeGameOnly());
+	}
 }
