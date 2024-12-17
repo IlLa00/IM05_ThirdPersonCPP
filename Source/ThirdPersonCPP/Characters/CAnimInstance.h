@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "Components/CActionComponent.h"
+#include "Components/CFeetComponent.h"
 #include "CAnimInstance.generated.h"
 
 
@@ -25,6 +26,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Player")
 		float Direction;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Player")
+		FFeetData FeetData;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Action")
 		EActionType ActionType;
